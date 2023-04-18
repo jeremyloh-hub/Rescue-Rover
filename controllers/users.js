@@ -14,6 +14,11 @@ const userSchema = yup.object({
   residential: yup.string().required(),
 });
 
+const loginSchema = yup.object({
+  userid: yup.string().required().min(3),
+  password: yup.string().required().min(3),
+});
+
 const create = async (req, res) => {
   const validatedData = await userSchema.validate(req.body);
   const { name, userid, password, email, age, residential } = validatedData;
@@ -32,7 +37,7 @@ const create = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const validatedData = await userSchema.validate(req.body);
+    const validatedData = await loginSchema.validate(req.body);
     const { userid, password } = validatedData;
 
     const { rows } = await pool.query("SELECT * FROM users WHERE userid = $1", [
@@ -50,7 +55,7 @@ const login = async (req, res) => {
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "2h" });
     res.status(200).json({ token, user });
   } catch (error) {
-    if (error.name === "ValidationError") {
+    if (error && error.name === "ValidationError") {
       return res.status(400).json({ message: error.errors.join(", ") });
     }
     res.status(500).json({ message: error.message });

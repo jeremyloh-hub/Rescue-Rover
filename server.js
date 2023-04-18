@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "dist")));
 
 const dogRouter = require("./routes/dogs");
-const userRouter = require("./routes/Users");
+const userRouter = require("./routes/users");
 
 app.use("/api/dogs", dogRouter);
 app.use("/api/users", userRouter);
