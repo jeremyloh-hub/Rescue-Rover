@@ -7,18 +7,7 @@ import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-
-interface Dog {
-  id: number;
-  name: string;
-  breed: string;
-  gender: string;
-  hdbapproved: boolean;
-  dob: string;
-  status: boolean;
-  personality: string;
-  imgurl: string;
-}
+import type { Dog } from "../../type";
 
 export default function Dogs() {
   const [dogs, setDogs] = useState<Dog[]>([]);

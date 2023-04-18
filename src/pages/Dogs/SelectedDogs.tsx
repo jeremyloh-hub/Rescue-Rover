@@ -1,17 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-interface Dog {
-  id: number;
-  name: string;
-  breed: string;
-  gender: string;
-  hdbapproved: boolean;
-  dob: string;
-  status: boolean;
-  personality: string;
-  imgurl: string;
-}
+import type { Dog } from "../../type";
 
 export default function SelectedDogs() {
   const [dogs, setDogs] = useState<Dog | null>(null);
