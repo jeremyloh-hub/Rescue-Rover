@@ -86,7 +86,7 @@ function App() {
     //   },
   ];
 
-  const renderAuthenticatedPages = (tokenUser) => {
+  const renderAuthenticatedPages = (tokenUser: any) => {
     const renderLoggedInContent = loggedInRoleSpecificRoutes.find(
       (config) => config.role === tokenUser.role
     )?.content;
