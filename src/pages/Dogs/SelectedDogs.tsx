@@ -5,6 +5,8 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -17,6 +19,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function SelectedDogs() {
   const [dogs, setDogs] = useState<Dog | null>(null);
   const { dogName } = useParams<{ dogName: string }>();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetch(`/api/dogs/${dogName}`)
@@ -54,6 +57,22 @@ export default function SelectedDogs() {
                 <p>Gender: {dogs.gender}</p>
                 <p>DOB: {dogs.dob}</p>
                 <p>Personality: {dogs.personality}</p>
+                {token && ( // Conditionally render buttons based on token
+                  <>
+                    <Link
+                      to={`/dogs/adopt/${dogs.id}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <Button variant="outlined">Adopt</Button>
+                    </Link>
+                    <Link
+                      to={`/dogs/foster/${dogs.id}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <Button variant="outlined">Foster</Button>
+                    </Link>
+                  </>
+                )}
               </Item>
             </Grid>
           </Grid>

@@ -38,7 +38,10 @@ export default function Dogs() {
               sx={{ display: "flex", justifyContent: "center" }}
             >
               <Card sx={{ maxWidth: 600 }}>
-                <Link to={`/dogs/${d.name}`}>
+                <Link
+                  to={`/dogs/${d.name}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
                   <CardActionArea>
                     <CardMedia
                       component="img"

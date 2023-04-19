@@ -176,6 +176,7 @@ export default function SignUp() {
             <OutlinedInput
               id="password"
               name="password"
+              label="Outlined"
               type="password"
               value={state.password}
               onChange={handleChange}

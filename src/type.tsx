@@ -21,3 +21,22 @@ export type User = {
   age: number;
   residential: string;
 };
+
+export type AdoptionForm = {
+  dog_id: number;
+  user_id: number;
+  history: boolean;
+  activity_level: string;
+  existing_pet: string;
+  reason: string;
+};
+
+export type FosterForm = {
+  dog_id: number;
+  user_id: number;
+  history: boolean;
+  activity_level: string;
+  existing_pet: string;
+  reason: string;
+  duration: string;
+};

@@ -53,6 +53,10 @@ export default function Login({ setUser }: { setUser: UF }) {
     }
   };
 
+  const handleRegister = (event: React.ChangeEvent<HTMLInputElement>) => {
+    navigate("/signup");
+  };
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoginTry({
       ...loginTry,
@@ -70,7 +74,7 @@ export default function Login({ setUser }: { setUser: UF }) {
       borderColor="grey.300"
       borderRadius={4}
       maxWidth={800}
-      height={250}
+      height={300}
     >
       <form autoComplete="off" onSubmit={handleLogin}>
         <Typography variant="h5" align="center" gutterBottom>
@@ -102,6 +106,9 @@ export default function Login({ setUser }: { setUser: UF }) {
           </FormControl>
           <Button type="submit" variant="contained">
             LOGIN
+          </Button>
+          <Button type="button" variant="contained" onClick={handleRegister}>
+            Register
           </Button>
         </Box>
       </form>

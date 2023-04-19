@@ -10,6 +10,8 @@ import SelectedDogs from "./Dogs/SelectedDogs";
 import Login from "./Users/Login";
 import SignUp from "./Users/Signup";
 import HomePage from "./HomePage/HomePage";
+import AdoptionForm from "./AdoptionForm/AdoptionForm";
+import FosterForm from "./FosterForm/FosterForm";
 
 function App() {
   const [user, setUser] = useState(getUser());
@@ -24,6 +26,17 @@ function App() {
     {
       path: "/signup",
       element: <SignUp />,
+    },
+  ];
+
+  const formRoutes = [
+    {
+      path: "/dogs/adopt/:dogID",
+      element: <AdoptionForm />,
+    },
+    {
+      path: "/dogs/foster/:dogID",
+      element: <FosterForm />,
     },
   ];
 
@@ -57,6 +70,13 @@ function App() {
       content: (
         <Routes>
           {userPagesRoutes.map((config) => (
+            <Route
+              key={config.path}
+              path={config.path}
+              element={config.element}
+            />
+          ))}
+          {formRoutes.map((config) => (
             <Route
               key={config.path}
               path={config.path}

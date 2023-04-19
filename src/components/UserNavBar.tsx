@@ -23,7 +23,21 @@ const pages = [
     link: "/dogs",
   },
 ];
-const settings = ["Profile", "Logout"];
+const settings = [
+  {
+    name: "Profile",
+    handler: () => {
+      /* code for handling profile click */
+    },
+  },
+  {
+    name: "Logout",
+    handler: () => {
+      logout();
+      window.location.replace("/");
+    },
+  },
+];
 
 export default function UserNavBar() {
   const navigate = useNavigate();
@@ -47,8 +61,6 @@ export default function UserNavBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-    logout();
-    window.location.replace("/");
   };
 
   return (
@@ -177,8 +189,8 @@ export default function UserNavBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.name} onClick={setting.handler}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
