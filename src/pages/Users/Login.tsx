@@ -93,6 +93,7 @@ export default function Login({ setUser }: { setUser: UF }) {
             <OutlinedInput
               id="password"
               name="password"
+              label="Outlined"
               type="password"
               value={loginTry.password}
               onChange={handleChange}
