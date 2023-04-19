@@ -53,7 +53,7 @@ export default function Login({ setUser }: { setUser: UF }) {
     }
   };
 
-  const handleRegister = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRegister = () => {
     navigate("/signup");
   };
 
