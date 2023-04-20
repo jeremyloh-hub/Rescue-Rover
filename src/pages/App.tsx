@@ -140,7 +140,6 @@ function App() {
       </Routes>
     </React.Fragment>
   );
-  console.log("user ", tokenUser?.user);
 
   return (
     <div className="App">

@@ -19,6 +19,19 @@ const loginSchema = yup.object({
   password: yup.string().required().min(3),
 });
 
+const checkavailability = async (req, res) => {
+  const { userid, email } = req.query;
+  try {
+    const { rows } = await pool.query(
+      `SELECT * FROM users WHERE userid='${userid}' OR email='${email}'`
+    );
+    const checkuser = rows[0];
+    res.status(200).json(checkuser || null);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const create = async (req, res) => {
   const validatedData = await userSchema.validate(req.body);
   const { name, userid, password, email, age, residential } = validatedData;
@@ -93,4 +106,5 @@ module.exports = {
   isAuth,
   create,
   login,
+  checkavailability,
 };

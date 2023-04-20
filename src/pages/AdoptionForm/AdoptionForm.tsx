@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { AdoptionForm } from "../../type";
 import { object, string, number, boolean } from "yup";
 import {
@@ -7,11 +7,11 @@ import {
   Button,
   FormControl,
   InputLabel,
-  OutlinedInput,
   Typography,
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextareaAutosize,
 } from "@mui/material";
 
 const AdoptionFormSchema = object({
@@ -25,9 +25,14 @@ const AdoptionFormSchema = object({
 
 export default function AdoptionForm() {
   const navigate = useNavigate();
+  const { dogID } = useParams();
+  const dogIdNumber = Number(dogID);
+  const token = localStorage.getItem("token");
+  const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
+
   const [state, setState] = useState<AdoptionForm>({
-    dog_id: 0,
-    user_id: 0,
+    dog_id: dogIdNumber,
+    user_id: tokenUser.user.id,
     history: false,
     activity_level: "",
     existing_pet: "",
@@ -36,7 +41,7 @@ export default function AdoptionForm() {
   const [error, setError] = useState(null);
 
   const newUser = async (userData: AdoptionForm) => {
-    const response = await fetch(`/api/dog/adoption`, {
+    const response = await fetch("/api/adoption", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,6 +61,7 @@ export default function AdoptionForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const validatedData = await AdoptionFormSchema.validate(state);
+    console.log(validatedData);
     try {
       await newUser(validatedData);
       setState({
@@ -73,14 +79,23 @@ export default function AdoptionForm() {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     setState({
+  //       ...state,
+  //       [event.target.name]: event.target.value,
+  //     });
+  //   };
+
+  const handleChangeSelect = (event: SelectChangeEvent<string>) => {
     setState({
       ...state,
       [event.target.name]: event.target.value,
     });
   };
 
-  const handleChangeSelect = (event: SelectChangeEvent<string>) => {
+  const handleChangeTextArea: React.ChangeEventHandler<HTMLTextAreaElement> = (
+    event
+  ) => {
     setState({
       ...state,
       [event.target.name]: event.target.value,
@@ -97,7 +112,7 @@ export default function AdoptionForm() {
       borderColor="grey.300"
       borderRadius={4}
       maxWidth={800}
-      height={400}
+      height={380}
     >
       <form autoComplete="off" onSubmit={handleSubmit}>
         <Typography variant="h5" align="center" gutterBottom>
@@ -151,13 +166,14 @@ export default function AdoptionForm() {
             </Select>
           </FormControl>
           <FormControl variant="outlined">
-            <InputLabel htmlFor="reason">Reason for adopting</InputLabel>
-            <OutlinedInput
+            <InputLabel htmlFor="reason"></InputLabel>
+            <TextareaAutosize
               id="reason"
               name="reason"
-              label="Outlined"
+              aria-label="reason for adopting"
+              placeholder="State the reason for adopting"
               value={state.reason}
-              onChange={handleChange}
+              onChange={handleChangeTextArea}
               required
             />
           </FormControl>

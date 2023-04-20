@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { FosterForm } from "../../type";
 import { object, string, number, boolean } from "yup";
 import {
@@ -7,11 +7,11 @@ import {
   Button,
   FormControl,
   InputLabel,
-  OutlinedInput,
   Typography,
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextareaAutosize,
 } from "@mui/material";
 
 const FosterFormSchema = object({
@@ -26,9 +26,13 @@ const FosterFormSchema = object({
 
 export default function FosterForm() {
   const navigate = useNavigate();
+  const { dogID } = useParams();
+  const dogIdNumber = Number(dogID);
+  const token = localStorage.getItem("token");
+  const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
   const [state, setState] = useState<FosterForm>({
-    dog_id: 0,
-    user_id: 0,
+    dog_id: dogIdNumber,
+    user_id: tokenUser.user.id,
     history: false,
     activity_level: "",
     existing_pet: "",
@@ -37,8 +41,8 @@ export default function FosterForm() {
   });
   const [error, setError] = useState(null);
 
-  const newUser = async (userData: FosterForm) => {
-    const response = await fetch(`/api/dog/foster`, {
+  const newFoster = async (userData: FosterForm) => {
+    const response = await fetch("/api/foster", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,8 +62,9 @@ export default function FosterForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const validatedData = await FosterFormSchema.validate(state);
+    console.log(validatedData);
     try {
-      await newUser(validatedData);
+      await newFoster(validatedData);
       setState({
         dog_id: 0,
         user_id: 0,
@@ -76,14 +81,23 @@ export default function FosterForm() {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setState({
+  //     ...state,
+  //     [event.target.name]: event.target.value,
+  //   });
+  // };
+
+  const handleChangeSelect = (event: SelectChangeEvent<string>) => {
     setState({
       ...state,
       [event.target.name]: event.target.value,
     });
   };
 
-  const handleChangeSelect = (event: SelectChangeEvent<string>) => {
+  const handleChangeTextArea: React.ChangeEventHandler<HTMLTextAreaElement> = (
+    event
+  ) => {
     setState({
       ...state,
       [event.target.name]: event.target.value,
@@ -104,7 +118,7 @@ export default function FosterForm() {
     >
       <form autoComplete="off" onSubmit={handleSubmit}>
         <Typography variant="h5" align="center" gutterBottom>
-          Adoption Application Form
+          Fostering Application Form
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <FormControl variant="outlined">
@@ -154,17 +168,6 @@ export default function FosterForm() {
             </Select>
           </FormControl>
           <FormControl variant="outlined">
-            <InputLabel htmlFor="reason">Reason for adopting</InputLabel>
-            <OutlinedInput
-              id="reason"
-              name="reason"
-              label="Outlined"
-              value={state.reason}
-              onChange={handleChange}
-              required
-            />
-          </FormControl>
-          <FormControl variant="outlined">
             <InputLabel htmlFor="duration">Foster duration</InputLabel>
             <Select
               id="duration"
@@ -178,6 +181,18 @@ export default function FosterForm() {
               <MenuItem value="6months">6 Months</MenuItem>
               <MenuItem value="12months">12 Months</MenuItem>
             </Select>
+          </FormControl>
+          <FormControl variant="outlined">
+            <InputLabel htmlFor="reason"></InputLabel>
+            <TextareaAutosize
+              id="reason"
+              name="reason"
+              aria-label="reason for adopting"
+              placeholder="State the reason for fostering"
+              value={state.reason}
+              onChange={handleChangeTextArea}
+              required
+            />
           </FormControl>
           <Button type="submit" variant="contained">
             Submit

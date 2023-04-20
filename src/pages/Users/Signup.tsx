@@ -35,9 +35,22 @@ export default function SignUp() {
     age: 0,
     residential: "",
   });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const disable = state.password !== state.confirm;
+
+  const userExists = async (userid: string, email: string) => {
+    const response = await fetch(`/api/users?userid=${userid}&email=${email}`);
+    if (!response.ok) {
+      throw new Error("Error checking if user exists");
+    }
+    const data = await response.json();
+    if (data) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const newUser = async (userData: User) => {
     const response = await fetch(`/api/users/signup`, {
@@ -60,28 +73,38 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const validatedData = await userSchema.validate(state);
+
     try {
-      await newUser(validatedData);
-      setState({
-        name: "",
-        userid: "",
-        password: "",
-        confirm: "",
-        email: "",
-        age: 0,
-        residential: "",
-      });
-      navigate("/login");
+      const { userid, email } = validatedData;
+      const exists = await userExists(userid, email);
+      if (exists === true) {
+        setError("User with this email or userid already exists");
+        console.log(setError);
+        return;
+      } else {
+        await newUser(validatedData);
+        setState({
+          name: "",
+          userid: "",
+          password: "",
+          confirm: "",
+          email: "",
+          age: 0,
+          residential: "",
+        });
+        navigate("/login");
+      }
     } catch (error: any) {
       setError(error.message);
       console.error(`Error: ${error.message}`);
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
     setState({
       ...state,
-      [event.target.name]: event.target.value,
+      [name]: value,
     });
   };
 
