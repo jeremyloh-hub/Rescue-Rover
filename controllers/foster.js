@@ -34,4 +34,18 @@ const addFoster = async (req, res) => {
   }
 };
 
-module.exports = { addFoster };
+const checkFosterForm = async (req, res) => {
+  const { userid } = req.query;
+  console.log(userid);
+  try {
+    const { rows } = await pool.query(
+      `SELECT * FROM fosters WHERE user_id=${userid} AND status='processing'`
+    );
+    const checkuser = rows[0];
+    res.status(200).json(checkuser || null);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+module.exports = { addFoster, checkFosterForm };

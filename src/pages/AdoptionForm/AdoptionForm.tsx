@@ -38,7 +38,20 @@ export default function AdoptionForm() {
     existing_pet: "",
     reason: "",
   });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const formExists = async (userid: number) => {
+    const response = await fetch(`/api/adoption?userid=${userid}`);
+    if (!response.ok) {
+      throw new Error("Error checking if user adoption exists");
+    }
+    const data = await response.json();
+    if (data) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const newUser = async (userData: AdoptionForm) => {
     const response = await fetch("/api/adoption", {
@@ -63,16 +76,23 @@ export default function AdoptionForm() {
     const validatedData = await AdoptionFormSchema.validate(state);
     console.log(validatedData);
     try {
-      await newUser(validatedData);
-      setState({
-        dog_id: 0,
-        user_id: 0,
-        history: false,
-        activity_level: "",
-        existing_pet: "",
-        reason: "",
-      });
-      navigate("/");
+      const { user_id } = validatedData;
+      const exists = await formExists(user_id);
+      if (exists === true) {
+        setError("You have already submitted an application !");
+        return;
+      } else {
+        await newUser(validatedData);
+        setState({
+          dog_id: 0,
+          user_id: 0,
+          history: false,
+          activity_level: "",
+          existing_pet: "",
+          reason: "",
+        });
+        navigate("/");
+      }
     } catch (error: any) {
       setError(error.message);
       console.error(`Error: ${error.message}`);

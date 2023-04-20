@@ -73,13 +73,11 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const validatedData = await userSchema.validate(state);
-
     try {
       const { userid, email } = validatedData;
       const exists = await userExists(userid, email);
       if (exists === true) {
         setError("User with this email or userid already exists");
-        console.log(setError);
         return;
       } else {
         await newUser(validatedData);

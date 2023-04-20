@@ -39,7 +39,20 @@ export default function FosterForm() {
     reason: "",
     duration: "",
   });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const formExists = async (userid: number) => {
+    const response = await fetch(`/api/foster?userid=${userid}`);
+    if (!response.ok) {
+      throw new Error("Error checking if user adoption exists");
+    }
+    const data = await response.json();
+    if (data) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const newFoster = async (userData: FosterForm) => {
     const response = await fetch("/api/foster", {
@@ -64,17 +77,24 @@ export default function FosterForm() {
     const validatedData = await FosterFormSchema.validate(state);
     console.log(validatedData);
     try {
-      await newFoster(validatedData);
-      setState({
-        dog_id: 0,
-        user_id: 0,
-        history: false,
-        activity_level: "",
-        existing_pet: "",
-        reason: "",
-        duration: "",
-      });
-      navigate("/");
+      const { user_id } = validatedData;
+      const exists = await formExists(user_id);
+      if (exists === true) {
+        setError("You have already submitted an application !");
+        return;
+      } else {
+        await newFoster(validatedData);
+        setState({
+          dog_id: 0,
+          user_id: 0,
+          history: false,
+          activity_level: "",
+          existing_pet: "",
+          reason: "",
+          duration: "",
+        });
+        navigate("/");
+      }
     } catch (error: any) {
       setError(error.message);
       console.error(`Error: ${error.message}`);
