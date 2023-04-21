@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js",
-    "dev": "concurrently 'vite' 'node --watch server.js'",
+    "start1": "node server.js",
+    "start": "concurrently 'vite' 'node --watch server.js'",
     "devfront": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
