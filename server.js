@@ -6,7 +6,7 @@ require("dotenv").config();
 require("./config/database");
 
 const dogRouter = require("./routes/dogs");
-const userRouter = require("./routes/lala");
+const userRouter = require("./routes/user");
 const adoptRouter = require("./routes/adoption");
 const fosterRouter = require("./routes/foster");
 
