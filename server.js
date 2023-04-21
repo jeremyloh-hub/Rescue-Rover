@@ -5,13 +5,13 @@ const path = require("path");
 require("dotenv").config();
 require("./config/database");
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "dist")));
-
 const dogRouter = require("./routes/dogs");
 const userRouter = require("./routes/users");
 const adoptRouter = require("./routes/adoption");
 const fosterRouter = require("./routes/foster");
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "dist")));
 
 app.use("/api/dogs", dogRouter);
 app.use("/api/users", userRouter);
