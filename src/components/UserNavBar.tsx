@@ -12,8 +12,6 @@ import {
   Avatar,
   Toolbar,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
 import { logout } from "../utilities/users-service";
 import { useNavigate } from "react-router-dom";
@@ -94,9 +92,7 @@ export default function UserNavBar() {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
+            ></IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -129,7 +125,6 @@ export default function UserNavBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
