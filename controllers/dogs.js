@@ -53,7 +53,8 @@ const editDogPost = async (req, res) => {
   const { dogID } = req.query;
   try {
     const result = await pool.query(
-      `UPDATE dogs SET name = '${name}', hdbapproved = ${hdbapproved}, dob = '${dob}', personality = '${personality}' WHERE id = ${dogID}`
+      "UPDATE dogs SET name = $1, hdbapproved = $2, dob = $3, personality = $4 WHERE id = $5",
+      [name, hdbapproved, dob, personality, dogID]
     );
     console.log("successfully updated a dog post");
     res.json(result.rows);
@@ -63,15 +64,33 @@ const editDogPost = async (req, res) => {
   }
 };
 
+const deleteDogPost = async (req, res) => {
+  const { dogName } = req.params;
+  try {
+    const result = await pool.query("DELETE FROM dogs WHERE name = $1", [
+      dogName,
+    ]);
+    console.log("successfully deleted a dog post");
+    if (result.rowCount === 0) {
+      res.status(404).json({ message: "Dog not found" });
+    } else {
+      res.json(result.rows);
+    }
+  } catch (error) {
+    console.error("Error executing query", error.stack);
+    res.status(500).json({ message: "Error executing query" });
+  }
+};
+
 const showSelectedDogs = async (req, res) => {
-  const name = req.params.dogName;
+  const { dogName } = req.params;
   pool.connect((err, client, done) => {
     if (err) {
       console.error("Error acquiring client", err.stack);
       return res.status(500).json({ message: "Error acquiring client" });
     }
     client.query(
-      `SELECT * FROM dogs WHERE name = '${name}';`,
+      `SELECT * FROM dogs WHERE name = '${dogName}';`,
       (err, result) => {
         if (err) {
           console.error("Error executing query", err.stack);
@@ -89,4 +108,5 @@ module.exports = {
   addDogPost,
   showSelectedDogs,
   editDogPost,
+  deleteDogPost,
 };
