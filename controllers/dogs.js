@@ -17,17 +17,8 @@ const showDogs = async (req, res) => {
   });
 };
 
-const addDogs = async (req, res) => {
-  const body = {
-    name: "bao",
-    breed: "Pomeranian",
-    gender: "male",
-    hdbapproved: "true",
-    dob: "2023-05-12",
-    status: "true",
-    personality: "energectic and playful",
-    imgurl: null,
-  };
+const addDogPost = async (req, res) => {
+  const form = req.body;
   pool.connect((err, client, done) => {
     if (err) {
       console.error("Error acquiring client", err.stack);
@@ -36,13 +27,13 @@ const addDogs = async (req, res) => {
     client.query(
       `INSERT INTO dogs (name, breed, gender, hdbapproved, dob, status, personality) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
       [
-        body.name,
-        body.breed,
-        body.gender,
-        body.hdbapproved,
-        body.dob,
-        body.status,
-        body.personality,
+        form.name,
+        form.breed,
+        form.gender,
+        form.hdbapproved,
+        form.dob,
+        form.status,
+        form.personality,
       ],
       (err, result) => {
         if (err) {
@@ -50,11 +41,26 @@ const addDogs = async (req, res) => {
           return res.status(500).json({ message: "Error executing query" });
         }
         res.json(result.rows);
-        console.log("successfully added a dog");
+        console.log("successfully added a post");
         client.release();
       }
     );
   });
+};
+
+const editDogPost = async (req, res) => {
+  const { name, hdbapproved, dob, personality } = req.body;
+  const { dogID } = req.query;
+  try {
+    const result = await pool.query(
+      `UPDATE dogs SET name = '${name}', hdbapproved = ${hdbapproved}, dob = '${dob}', personality = '${personality}' WHERE id = ${dogID}`
+    );
+    console.log("successfully updated a dog post");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error executing query", error.stack);
+    res.status(500).json({ message: "Error executing query" });
+  }
 };
 
 const showSelectedDogs = async (req, res) => {
@@ -78,4 +84,9 @@ const showSelectedDogs = async (req, res) => {
   });
 };
 
-module.exports = { showDogs, addDogs, showSelectedDogs };
+module.exports = {
+  showDogs,
+  addDogPost,
+  showSelectedDogs,
+  editDogPost,
+};
