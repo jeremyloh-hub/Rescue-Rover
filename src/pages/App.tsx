@@ -12,6 +12,7 @@ import SignUp from "./Users/Signup";
 import HomePage from "./HomePage/HomePage";
 import AdoptionForm from "./AdoptionForm/AdoptionForm";
 import FosterForm from "./FosterForm/FosterForm";
+import PostForm from "./PostForm/PostForm";
 
 function App() {
   const [user, setUser] = useState(getUser());
@@ -62,7 +63,12 @@ function App() {
       element: <HomePage />,
     },
   ];
-  const AdminRouteConfig = [];
+  const AdminRouteConfig = [
+    {
+      path: "/postform",
+      element: <PostForm />,
+    },
+  ];
 
   const loggedInRoleSpecificRoutes = [
     {
@@ -128,6 +134,9 @@ function App() {
           <Route {...config} />
         ))}
         {dogPageRoutes.map((config) => (
+          <Route key={config.path} {...config}></Route>
+        ))}
+        {AdminRouteConfig.map((config) => (
           <Route key={config.path} {...config}></Route>
         ))}
         {/* {AdminRouteConfig.map((config) => (

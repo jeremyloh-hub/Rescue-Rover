@@ -103,10 +103,32 @@ const showSelectedDogs = async (req, res) => {
   });
 };
 
+const getSelectedPost = async (req, res) => {
+  const { dogName } = req.params;
+  pool.connect((err, client, done) => {
+    if (err) {
+      console.error("Error acquiring client", err.stack);
+      return res.status(500).json({ message: "Error acquiring client" });
+    }
+    client.query(
+      `SELECT name , hdbapproved, dob , personality FROM dogs WHERE name = '${dogName}';`,
+      (err, result) => {
+        if (err) {
+          console.error("Error executing query", err.stack);
+          return res.status(500).json({ message: "Error executing query" });
+        }
+        res.json(result.rows[0]);
+        client.release();
+      }
+    );
+  });
+};
+
 module.exports = {
   showDogs,
   addDogPost,
   showSelectedDogs,
   editDogPost,
   deleteDogPost,
+  getSelectedPost,
 };
