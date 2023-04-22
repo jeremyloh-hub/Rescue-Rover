@@ -1,12 +1,10 @@
-import { string } from "yup";
-
 export type Dog = {
   id: number;
   name: string;
   breed: string;
   gender: string;
   hdbapproved: boolean;
-  dob: string;
+  dob: Date;
   status: boolean;
   personality: string;
   imgurl: string;
@@ -39,4 +37,8 @@ export type FosterForm = {
   existing_pet: string;
   reason: string;
   duration: string;
+};
+
+export type PostFormProps = {
+  dogs: Dog[];
 };

@@ -7,6 +7,7 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import * as dayjs from "dayjs";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -55,7 +56,7 @@ export default function SelectedDogs() {
                 )}
                 <p>Breed: {dogs.breed}</p>
                 <p>Gender: {dogs.gender}</p>
-                <p>DOB: {dogs.dob}</p>
+                <p>DOB: {dayjs(dogs.dob).format("DD/MM/YYYY")}</p>
                 <p>Personality: {dogs.personality}</p>
                 {token && ( // Conditionally render buttons based on token
                   <>

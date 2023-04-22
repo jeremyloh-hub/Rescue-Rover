@@ -50,14 +50,15 @@ const addDogPost = async (req, res) => {
 
 const editDogPost = async (req, res) => {
   const { name, hdbapproved, dob, personality } = req.body;
-  const { dogID } = req.query;
+  const { dogName } = req.params;
   try {
     const result = await pool.query(
-      "UPDATE dogs SET name = $1, hdbapproved = $2, dob = $3, personality = $4 WHERE id = $5",
-      [name, hdbapproved, dob, personality, dogID]
+      "UPDATE dogs SET name = $1, hdbapproved = $2, dob = $3, personality = $4 WHERE name = $5",
+      [name, hdbapproved, dob, personality, dogName]
     );
     console.log("successfully updated a dog post");
     res.json(result.rows);
+    console.log(result.rows);
   } catch (error) {
     console.error("Error executing query", error.stack);
     res.status(500).json({ message: "Error executing query" });

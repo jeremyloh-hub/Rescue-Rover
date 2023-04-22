@@ -10,21 +10,27 @@ import {
   MenuItem,
   Select,
   TextareaAutosize,
-  TextField,
+  OutlinedInput,
+  Stack,
+  Tooltip,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import * as dayjs from "dayjs";
 
-export default function EditPostForm() {
+export default function EditPostForm({ handleEditPost }: any) {
   const { dogName } = useParams<{ dogName: string }>();
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+
   const [editedPost, setEditedPost] = useState({
     name: "",
     hdbapproved: false,
-    dob: "",
+    dob: new Date(),
     personality: "",
   });
-
+  console.log(dayjs(editedPost.dob).format("MM/DD/YYYY"));
   useEffect(() => {
-    fetch(`/api/postform/dogs/${dogName}`)
+    fetch(`/api/dogs/postform/${dogName}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -37,44 +43,85 @@ export default function EditPostForm() {
       .catch((error) => console.error(error));
   }, [dogName]);
 
-  const handleChange = (event: any) => {
-    const { name, value } = event.target;
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditedPost({
       ...editedPost,
-      [name]: value,
+      name: event.target.value,
     });
   };
 
-  const handleEdit = async () => {
-    const token = localStorage.getItem("token");
-    const nameExists = products.some(
-      (p) => p._id !== productID && p.name === editedProduct.name
-    );
-    if (nameExists) {
-      alert("Product with the same name already exists!");
-      return;
+  const handleHdbChange = (event: any) => {
+    setEditedPost({
+      ...editedPost,
+      hdbapproved: event.target.value as boolean,
+    });
+  };
+
+  const handleDobChange = (event: any) => {
+    setEditedPost({
+      ...editedPost,
+      dob: event.target.value,
+    });
+  };
+
+  const handlePersonalityChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setEditedPost({
+      ...editedPost,
+      personality: event.target.value,
+    });
+  };
+
+  const handleEdit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const response = await fetch(`/api/dogs/${dogName}/edit`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedPost), // Fix typo here
+    });
+    if (response.ok) {
+      const updatedPost = await response.json();
+      console.log(updatedPost);
+      handleEditPost(updatedPost);
+      navigate("/postform");
     } else {
-      const newProduct = {
-        ...editedProduct,
-        price: editedProduct.price * CONVERTTODOLLAR, // divide price by 100 to convert it back to dollars
-      };
-      const response = await fetch(`/api/AdminProduct/${productID}/edit`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify(newProduct),
-      });
-      const updatedProduct = await response.json();
-      handleEditProduct(updatedProduct);
-      navigate("/productpage");
+      console.error("Error updating post:", response.status);
     }
   };
 
-  const handleCancel = async () => {
-    navigate("/postform");
-  };
+  function Label({
+    componentName,
+    valueType,
+    isProOnly,
+  }: {
+    componentName: string;
+    valueType: string;
+    isProOnly?: boolean;
+  }) {
+    const content = (
+      <span>
+        <strong>{componentName}</strong> for {valueType} editing
+      </span>
+    );
+
+    if (isProOnly) {
+      return (
+        <Stack direction="row" spacing={0.5} component="span">
+          <Tooltip title="Included on Pro package">
+            <a href="/x/introduction/licensing/#pro-plan">
+              <span className="plan-pro" />
+            </a>
+          </Tooltip>
+          {content}
+        </Stack>
+      );
+    }
+
+    return content;
+  }
 
   return (
     <>
@@ -87,23 +134,21 @@ export default function EditPostForm() {
         borderColor="grey.300"
         borderRadius={4}
         maxWidth={800}
-        height={380}
+        height={570}
       >
         <form autoComplete="off" onSubmit={handleEdit}>
           <Typography variant="h5" align="center" gutterBottom>
             Edit Dog Post
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <FormControl variant="outlined">
+            <FormControl>
               <InputLabel htmlFor="name">Name</InputLabel>
-              <TextField
+              <OutlinedInput
                 id="name"
                 name="name"
-                variant="standard"
-                aria-label="name"
-                placeholder="Name"
+                label="Outlined"
                 value={editedPost.name}
-                onChange={handleChange}
+                onChange={handleNameChange}
                 required
               />
             </FormControl>
@@ -113,7 +158,7 @@ export default function EditPostForm() {
                 id="hdbapproved"
                 name="hdbapproved"
                 value={editedPost.hdbapproved}
-                onChange={handleChange}
+                onChange={handleHdbChange}
                 label="Outlined"
                 required
               >
@@ -121,35 +166,25 @@ export default function EditPostForm() {
                 <MenuItem value="true">Yes</MenuItem>
               </Select>
             </FormControl>
+            <DatePicker
+              label="Date of Birth"
+              value={dayjs(editedPost.dob)}
+              onChange={handleDobChange}
+            />
             <FormControl variant="outlined">
-              <InputLabel htmlFor="activity_level">Existing Pets</InputLabel>
-              <Select
-                id="existing_pet"
-                name="existing_pet"
-                value={state.existing_pet}
-                onChange={handleChangeSelect}
-                label="Outlined"
-                required
-              >
-                <MenuItem value="cat">Cat</MenuItem>
-                <MenuItem value="dog">Dog</MenuItem>
-                <MenuItem value="others">Others</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl variant="outlined">
-              <InputLabel htmlFor="reason"></InputLabel>
+              <InputLabel htmlFor="personality"></InputLabel>
               <TextareaAutosize
-                id="reason"
-                name="reason"
-                aria-label="reason for adopting"
-                placeholder="State the reason for adopting"
-                value={state.reason}
-                onChange={handleChangeTextArea}
+                id="personality"
+                name="personality"
+                aria-label="personality"
+                placeholder="Personality"
+                value={editedPost.personality}
+                onChange={handlePersonalityChange}
                 required
               />
             </FormControl>
             <Button type="submit" variant="contained">
-              Submit
+              Edit Post
             </Button>
           </Box>
         </form>

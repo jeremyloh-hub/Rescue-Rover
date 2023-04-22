@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Route, Routes } from "react-router";
 import { Link } from "react-router-dom";
 import { getUser } from "../utilities/users-service";
@@ -13,11 +13,31 @@ import HomePage from "./HomePage/HomePage";
 import AdoptionForm from "./AdoptionForm/AdoptionForm";
 import FosterForm from "./FosterForm/FosterForm";
 import PostForm from "./PostForm/PostForm";
+import EditPostForm from "./PostForm/EditPostForm";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import type { Dog, PostFormProps } from "../type";
 
 function App() {
   const [user, setUser] = useState(getUser());
   const token = localStorage.getItem("token");
   const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
+  const [dogs, setDogs] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/dogs")
+      .then((response) => response.json())
+      .then((data) => setDogs(data))
+      .catch((error) => console.error(error));
+  }, [dogs]);
+
+  const handleEditPost = (editedPost: any) => {
+    setDogs((prevPost: any) =>
+      prevPost.map((dog: any) =>
+        dog.name === editedPost.name ? editedPost : dog
+      )
+    );
+  };
 
   const loginRoutes = [
     {
@@ -66,7 +86,11 @@ function App() {
   const AdminRouteConfig = [
     {
       path: "/postform",
-      element: <PostForm />,
+      element: <PostForm dogs={dogs} />,
+    },
+    {
+      path: "/postform/edit/:dogName",
+      element: <EditPostForm handleEditPost={handleEditPost} />,
     },
   ];
 
@@ -152,9 +176,11 @@ function App() {
 
   return (
     <div className="App">
-      {tokenUser
-        ? renderAuthenticatedPages(tokenUser.user)
-        : renderUnauthenticatedPages()}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {tokenUser
+          ? renderAuthenticatedPages(tokenUser.user)
+          : renderUnauthenticatedPages()}
+      </LocalizationProvider>
     </div>
   );
 }

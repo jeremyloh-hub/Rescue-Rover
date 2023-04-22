@@ -10,18 +10,10 @@ import {
   Paper,
   Button,
 } from "@mui/material";
-import type { Dog } from "../../type";
+import type { Dog, PostFormProps } from "../../type";
+import * as dayjs from "dayjs";
 
-export default function PostForm() {
-  const [dogs, setDogs] = useState<Dog[]>([]);
-
-  useEffect(() => {
-    fetch("/api/dogs")
-      .then((response) => response.json())
-      .then((data) => setDogs(data))
-      .catch((error) => console.error(error));
-  }, []);
-
+export default function PostForm({ dogs }: PostFormProps) {
   return (
     <>
       <TableContainer component={Paper}>
@@ -45,11 +37,15 @@ export default function PostForm() {
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="center">{row.name}</TableCell>
-                <TableCell align="center">{row.dob}</TableCell>
+                <TableCell align="center">
+                  {row.hdbapproved === true ? <p>Yes</p> : <p>No</p>}
+                </TableCell>
+                <TableCell align="center">
+                  {dayjs(row.dob).format("DD/MM/YYYY")}
+                </TableCell>
                 <TableCell align="center">{row.personality}</TableCell>
                 <TableCell align="center">
-                  <Link to={`/postform/dogname/${row.name}/edit`}>
+                  <Link to={`/postform/edit/${row.name}`}>
                     <Button variant="contained">Edit</Button>
                   </Link>
                 </TableCell>
