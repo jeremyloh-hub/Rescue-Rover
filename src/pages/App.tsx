@@ -29,7 +29,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => setDogs(data))
       .catch((error) => console.error(error));
-  }, [dogs]);
+  }, []);
 
   const handleEditPost = (editedPost: any) => {
     setDogs((prevPost: any) =>
