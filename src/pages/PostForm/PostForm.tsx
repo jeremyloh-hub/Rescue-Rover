@@ -11,7 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import type { Dog, PostFormProps } from "../../type";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 export default function PostForm({ dogs }: PostFormProps) {
   return (

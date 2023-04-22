@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 
 export default function EditPostForm({ handleEditPost }: any) {
   const { dogName } = useParams<{ dogName: string }>();
