@@ -56,7 +56,9 @@ export default function SelectedDogs() {
                 )}
                 <p>Breed: {dogs.breed}</p>
                 <p>Gender: {dogs.gender}</p>
-                <p>DOB: {dayjs(dogs.dob).format("DD/MM/YYYY")}</p>
+                {dogs && dogs.dob && (
+                  <p>DOB: {dayjs(dogs.dob).format("DD/MM/YYYY")}</p>
+                )}
                 <p>Personality: {dogs.personality}</p>
                 {token && ( // Conditionally render buttons based on token
                   <>
