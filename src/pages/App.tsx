@@ -24,20 +24,18 @@ function App() {
   const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
   const [dogs, setDogs] = useState([]);
 
+  const handleEditPost = (editedPost: any) => {
+    setDogs((prevPost: any) =>
+      prevPost.map((dog: any) => (dog.id === editedPost.id ? editedPost : dog))
+    );
+  };
+
   useEffect(() => {
     fetch("/api/dogs")
       .then((response) => response.json())
       .then((data) => setDogs(data))
       .catch((error) => console.error(error));
   }, []);
-
-  const handleEditPost = (editedPost: any) => {
-    setDogs((prevPost: any) =>
-      prevPost.map((dog: any) =>
-        dog.name === editedPost.name ? editedPost : dog
-      )
-    );
-  };
 
   const loginRoutes = [
     {
@@ -89,7 +87,7 @@ function App() {
       element: <PostForm dogs={dogs} />,
     },
     {
-      path: "/postform/edit/:dogName",
+      path: "/postform/edit/:id",
       element: <EditPostForm handleEditPost={handleEditPost} />,
     },
   ];

@@ -45,7 +45,7 @@ export default function PostForm({ dogs }: PostFormProps) {
                 </TableCell>
                 <TableCell align="center">{row.personality}</TableCell>
                 <TableCell align="center">
-                  <Link to={`/postform/edit/${row.name}`}>
+                  <Link to={`/postform/edit/${row.id}`}>
                     <Button variant="contained">Edit</Button>
                   </Link>
                 </TableCell>

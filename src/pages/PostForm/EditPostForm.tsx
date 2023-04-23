@@ -18,7 +18,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 
 export default function EditPostForm({ handleEditPost }: any) {
-  const { dogName } = useParams<{ dogName: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
@@ -28,9 +28,9 @@ export default function EditPostForm({ handleEditPost }: any) {
     dob: new Date(),
     personality: "",
   });
-  console.log(dayjs(editedPost.dob).format("MM/DD/YYYY"));
+
   useEffect(() => {
-    fetch(`/api/dogs/postform/${dogName}`)
+    fetch(`/api/dogs/postform/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -41,7 +41,7 @@ export default function EditPostForm({ handleEditPost }: any) {
         setEditedPost(data);
       })
       .catch((error) => console.error(error));
-  }, [dogName]);
+  }, []);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditedPost({
@@ -57,11 +57,14 @@ export default function EditPostForm({ handleEditPost }: any) {
     });
   };
 
-  const handleDobChange = (event: any) => {
-    setEditedPost({
-      ...editedPost,
-      dob: event.target.value,
-    });
+  const handleDobChange = (date: Date | null) => {
+    if (date) {
+      const dateObject = dayjs(date).toDate();
+      setEditedPost({
+        ...editedPost,
+        dob: dateObject,
+      });
+    }
   };
 
   const handlePersonalityChange = (
@@ -75,16 +78,17 @@ export default function EditPostForm({ handleEditPost }: any) {
 
   const handleEdit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await fetch(`/api/dogs/${dogName}/edit`, {
+    const dobPlusOne = dayjs(editedPost.dob).add(1, "day").toDate();
+    const editedPostWithPlusOne = { ...editedPost, dob: dobPlusOne };
+    const response = await fetch(`/api/dogs/${id}/edit`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(editedPost), // Fix typo here
+      body: JSON.stringify(editedPostWithPlusOne),
     });
     if (response.ok) {
       const updatedPost = await response.json();
-      console.log(updatedPost);
       handleEditPost(updatedPost);
       navigate("/postform");
     } else {

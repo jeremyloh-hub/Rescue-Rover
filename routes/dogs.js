@@ -5,8 +5,7 @@ const userCtrl = require("../controllers/users");
 
 router.get("/", dogCtrl.showDogs);
 router.post("/new");
-router.put("/:dogName/edit", dogCtrl.editDogPost);
+router.put("/:id/edit", dogCtrl.editDogPost);
+router.get("/postform/:id", dogCtrl.getSelectedPost);
 router.get("/:dogName", dogCtrl.showSelectedDogs);
-router.get("/postform/:dogName", dogCtrl.getSelectedPost);
-
 module.exports = router;
