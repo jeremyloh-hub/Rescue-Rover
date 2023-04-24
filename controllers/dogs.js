@@ -1,4 +1,23 @@
 const pool = require("../config/database");
+const yup = require("yup");
+
+const DogSchema = yup.object({
+  name: yup.string().required(),
+  breed: yup.string().required(),
+  gender: yup.string().required(),
+  hdbapproved: yup.boolean().required(),
+  dob: yup.date().required(),
+  status: yup.boolean().required(),
+  personality: yup.string().required(),
+  imgurl: yup.string().required(),
+});
+
+const DogPostSchema = yup.object({
+  name: yup.string().required(),
+  hdbapproved: yup.boolean().required(),
+  dob: yup.date().required(),
+  personality: yup.string().required(),
+});
 
 const showDogs = async (req, res) => {
   pool.connect((err, client, done) => {
@@ -18,7 +37,8 @@ const showDogs = async (req, res) => {
 };
 
 const addDogPost = async (req, res) => {
-  const form = req.body;
+  const validatedData = await DogSchema.validate(req.body);
+  const form = validatedData;
   pool.connect((err, client, done) => {
     if (err) {
       console.error("Error acquiring client", err.stack);
@@ -50,19 +70,15 @@ const addDogPost = async (req, res) => {
 };
 
 const editDogPost = async (req, res) => {
-  const { name, hdbapproved, dob, personality } = req.body;
+  const validatedData = await DogPostSchema.validate(req.body);
+  const { name, hdbapproved, dob, personality } = validatedData;
   const { id } = req.params;
   try {
-    await pool.query(
-      "UPDATE dogs SET name = $1, hdbapproved = $2, dob = $3, personality = $4 WHERE id = $5",
+    const result = await pool.query(
+      "UPDATE dogs SET name = $1, hdbapproved = $2, dob = $3, personality = $4 WHERE id = $5 RETURNING *",
       [name, hdbapproved, dob, personality, id]
     );
     console.log("successfully updated a dog post");
-
-    // Execute a SELECT query to retrieve the updated row
-    const result = await pool.query("SELECT * FROM dogs WHERE name = $1", [
-      name,
-    ]);
 
     res.json(result.rows[0]);
   } catch (error) {
@@ -78,13 +94,10 @@ const deleteDogPost = async (req, res) => {
     try {
       await client.query("BEGIN");
 
-      // Delete the related records from the foster table
       await client.query("DELETE FROM fosters WHERE dog_id = $1", [id]);
 
-      // Delete the related records from the adoption table
       await client.query("DELETE FROM adoptions WHERE dog_id = $1", [id]);
 
-      // Delete the record from the dogs table
       const result = await client.query("DELETE FROM dogs WHERE id = $1", [id]);
 
       await client.query("COMMIT");
@@ -110,20 +123,23 @@ const deleteDogPost = async (req, res) => {
 };
 
 const showSelectedDogs = async (req, res) => {
-  const { id } = req.params;
+  const { dogName } = req.params;
   pool.connect((err, client, done) => {
     if (err) {
       console.error("Error acquiring client", err.stack);
       return res.status(500).json({ message: "Error acquiring client" });
     }
-    client.query(`SELECT * FROM dogs WHERE id = '${id}';`, (err, result) => {
-      if (err) {
-        console.error("Error executing query", err.stack);
-        return res.status(500).json({ message: "Error executing query" });
+    client.query(
+      `SELECT * FROM dogs WHERE name = '${dogName}';`,
+      (err, result) => {
+        if (err) {
+          console.error("Error executing query", err.stack);
+          return res.status(500).json({ message: "Error executing query" });
+        }
+        res.json(result.rows[0]);
+        client.release();
       }
-      res.json(result.rows[0]);
-      client.release();
-    });
+    );
   });
 };
 

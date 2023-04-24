@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import type { Dog } from "../../type";
+import type { Dog, EditPostForms, PostFormEditProps } from "../../type";
 import {
   Box,
   Button,
@@ -17,12 +17,12 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 
-export default function EditPostForm({ handleEditPost }: any) {
+export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
-  const [editedPost, setEditedPost] = useState({
+  const [editedPost, setEditedPost] = useState<EditPostForms>({
     name: "",
     hdbapproved: false,
     dob: new Date(),

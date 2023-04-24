@@ -6,6 +6,7 @@ import { getUser } from "../utilities/users-service";
 import Dogs from "./Dogs/AllDogs";
 import UserNavBar from "../components/UserNavBar";
 import NavBar from "../components/NavBar";
+import AdminNavBar from "../components/AdminNavBar";
 import SelectedDogs from "./Dogs/SelectedDogs";
 import Login from "./Users/Login";
 import SignUp from "./Users/Signup";
@@ -126,23 +127,35 @@ function App() {
         </Routes>
       ),
     },
-    //   {
-    //     role: "admin",
-    //     content: (
-    //       <Routes>
-    //         {AdminRouteConfig.map((config) => (
-    //           <Route
-    //             key={config.path}
-    //             path={config.path}
-    //             element={
-    //               <NavBar>{config.element}</NavBar>
-    //             }
-    //           />
-    //         ))}
-    //         <Route key="*" path="*" element={accessDeniedComponent} />
-    //       </Routes>
-    //     ),
-    //   },
+    {
+      role: "admin",
+      content: (
+        <Routes>
+          {userPagesRoutes.map((config) => (
+            <Route
+              key={config.path}
+              path={config.path}
+              element={config.element}
+            />
+          ))}
+          {formRoutes.map((config) => (
+            <Route
+              key={config.path}
+              path={config.path}
+              element={config.element}
+            />
+          ))}
+          {AdminRouteConfig.map((config) => (
+            <Route
+              key={config.path}
+              path={config.path}
+              element={config.element}
+            />
+          ))}
+          <Route key="*" path="*" element={accessDeniedComponent} />
+        </Routes>
+      ),
+    },
   ];
 
   const renderAuthenticatedPages = (tokenUser: any) => {
@@ -152,7 +165,7 @@ function App() {
 
     return (
       <React.Fragment>
-        <UserNavBar />
+        {tokenUser.role === "admin" ? <AdminNavBar /> : <UserNavBar />}
         {renderLoggedInContent}
       </React.Fragment>
     );
@@ -170,15 +183,12 @@ function App() {
           <Route key={config.path} {...config}></Route>
         ))}
         {AdminRouteConfig.map((config) => (
-          <Route key={config.path} {...config}></Route>
+          <Route
+            key={config.path}
+            path={config.path}
+            element={accessDeniedComponent}
+          />
         ))}
-        {/* {AdminRouteConfig.map((config) => (
-            <Route
-              key={config.path}
-              path={config.path}
-              element={accessDeniedComponent}
-            />
-          ))} */}
       </Routes>
     </React.Fragment>
   );

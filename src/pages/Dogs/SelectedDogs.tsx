@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import type { Dog } from "../../type";
 import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import { Box, Paper, Button } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 
 const Item = styled(Paper)(({ theme }) => ({

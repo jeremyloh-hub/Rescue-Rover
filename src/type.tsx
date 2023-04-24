@@ -41,15 +41,15 @@ export type FosterForm = {
 
 export type PostFormProps = {
   dogs: Dog[];
-  delPostForm: any;
+  delPostForm: (id: number) => void;
 };
 
 export type PostFormDeleteProps = {
   id: number;
-  delPostForm: any;
+  delPostForm: (id: number) => void;
 };
 
-export type PostForm = {
+export type PostForms = {
   name: string;
   breed: string;
   gender: string;
@@ -60,6 +60,17 @@ export type PostForm = {
   imgurl: string;
 };
 
+export type EditPostForms = {
+  name: string;
+  hdbapproved: boolean;
+  dob: Date;
+  personality: string;
+};
+
 export type PostFormAddProps = {
-  addPost: any;
+  addPost: (dog: PostForms) => void;
+};
+
+export type PostFormEditProps = {
+  handleEditPost: (editedPost: EditPostForms) => void;
 };

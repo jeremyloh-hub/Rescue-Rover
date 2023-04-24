@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { PostForm, PostFormAddProps } from "../../type";
+import type { PostForms, PostFormAddProps } from "../../type";
 import { object, string, number, boolean, date } from "yup";
 import {
   Box,
@@ -31,7 +31,7 @@ const PostFormSchema = object({
 export default function AddPostForm({ addPost }: PostFormAddProps) {
   const navigate = useNavigate();
 
-  const [state, setState] = useState<PostForm>({
+  const [state, setState] = useState<PostForms>({
     name: "",
     breed: "",
     gender: "",
@@ -43,7 +43,7 @@ export default function AddPostForm({ addPost }: PostFormAddProps) {
   });
   const [error, setError] = useState<string | null>(null);
 
-  const newPost = async (postData: PostForm) => {
+  const newPost = async (postData: PostForms) => {
     const response = await fetch("/api/dogs/new", {
       method: "POST",
       headers: {
