@@ -25,7 +25,7 @@ const addDogPost = async (req, res) => {
       return res.status(500).json({ message: "Error acquiring client" });
     }
     client.query(
-      `INSERT INTO dogs (name, breed, gender, hdbapproved, dob, status, personality) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+      `INSERT INTO dogs (name, breed, gender, hdbapproved, dob, status, personality, imgurl) VALUES ($1, $2, $3, $4, $5, $6, $7 , $8) RETURNING *;`,
       [
         form.name,
         form.breed,
@@ -34,13 +34,14 @@ const addDogPost = async (req, res) => {
         form.dob,
         form.status,
         form.personality,
+        form.imgurl,
       ],
       (err, result) => {
         if (err) {
           console.error("Error executing query", err.stack);
           return res.status(500).json({ message: "Error executing query" });
         }
-        res.json(result.rows);
+        res.json(result.rows[0]);
         console.log("successfully added a post");
         client.release();
       }

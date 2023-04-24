@@ -16,6 +16,7 @@ import PostForm from "./PostForm/PostForm";
 import EditPostForm from "./PostForm/EditPostForm";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import AddPostForm from "./PostForm/AddPostForm";
 
 function App() {
   const [user, setUser] = useState(getUser());
@@ -31,6 +32,10 @@ function App() {
 
   const delPostForm = (id: number) =>
     setDogs(dogs.filter(({ id: postId }) => postId !== id));
+
+  const addPost = (dog: any) => {
+    setDogs(dogs.concat(dog));
+  };
 
   useEffect(() => {
     fetch("/api/dogs")
@@ -91,6 +96,10 @@ function App() {
     {
       path: "/postform/edit/:id",
       element: <EditPostForm handleEditPost={handleEditPost} />,
+    },
+    {
+      path: "/postform/add/",
+      element: <AddPostForm addPost={addPost} />,
     },
   ];
 

@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import type { PostFormProps } from "../../type";
 import dayjs from "dayjs";
-import DeletePostForm from "./DeletePostForm";
+import DeletePostForm from "./DeletePostFormButton";
 
 export default function PostForm({ dogs, delPostForm }: PostFormProps) {
   return (
@@ -58,7 +58,9 @@ export default function PostForm({ dogs, delPostForm }: PostFormProps) {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button variant="contained">ADD</Button>
+      <Link to={`/postform/add`}>
+        <Button variant="contained">Add</Button>
+      </Link>
     </>
   );
 }

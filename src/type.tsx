@@ -48,3 +48,18 @@ export type PostFormDeleteProps = {
   id: number;
   delPostForm: any;
 };
+
+export type PostForm = {
+  name: string;
+  breed: string;
+  gender: string;
+  hdbapproved: boolean;
+  dob: Date;
+  status: boolean;
+  personality: string;
+  imgurl: string;
+};
+
+export type PostFormAddProps = {
+  addPost: any;
+};
