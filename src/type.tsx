@@ -41,4 +41,10 @@ export type FosterForm = {
 
 export type PostFormProps = {
   dogs: Dog[];
+  delPostForm: any;
+};
+
+export type PostFormDeleteProps = {
+  id: number;
+  delPostForm: any;
 };

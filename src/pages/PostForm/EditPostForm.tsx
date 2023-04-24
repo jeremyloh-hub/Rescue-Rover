@@ -57,7 +57,7 @@ export default function EditPostForm({ handleEditPost }: any) {
     });
   };
 
-  const handleDobChange = (date: Date | null) => {
+  const handleDobChange = (date: any) => {
     if (date) {
       const dateObject = dayjs(date).toDate();
       setEditedPost({

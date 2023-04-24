@@ -8,4 +8,5 @@ router.post("/new");
 router.put("/:id/edit", dogCtrl.editDogPost);
 router.get("/postform/:id", dogCtrl.getSelectedPost);
 router.get("/:dogName", dogCtrl.showSelectedDogs);
+router.delete("/:id/delete", dogCtrl.deleteDogPost);
 module.exports = router;

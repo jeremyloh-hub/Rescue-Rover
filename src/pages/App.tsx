@@ -16,7 +16,6 @@ import PostForm from "./PostForm/PostForm";
 import EditPostForm from "./PostForm/EditPostForm";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import type { Dog, PostFormProps } from "../type";
 
 function App() {
   const [user, setUser] = useState(getUser());
@@ -29,6 +28,9 @@ function App() {
       prevPost.map((dog: any) => (dog.id === editedPost.id ? editedPost : dog))
     );
   };
+
+  const delPostForm = (id: number) =>
+    setDogs(dogs.filter(({ id: postId }) => postId !== id));
 
   useEffect(() => {
     fetch("/api/dogs")
@@ -84,7 +86,7 @@ function App() {
   const AdminRouteConfig = [
     {
       path: "/postform",
-      element: <PostForm dogs={dogs} />,
+      element: <PostForm dogs={dogs} delPostForm={delPostForm} />,
     },
     {
       path: "/postform/edit/:id",

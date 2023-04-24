@@ -71,20 +71,40 @@ const editDogPost = async (req, res) => {
 };
 
 const deleteDogPost = async (req, res) => {
-  const { dogName } = req.params;
+  const { id } = req.params;
   try {
-    const result = await pool.query("DELETE FROM dogs WHERE name = $1", [
-      dogName,
-    ]);
-    console.log("successfully deleted a dog post");
-    if (result.rowCount === 0) {
-      res.status(404).json({ message: "Dog not found" });
-    } else {
-      res.json(result.rows);
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+
+      // Delete the related records from the foster table
+      await client.query("DELETE FROM fosters WHERE dog_id = $1", [id]);
+
+      // Delete the related records from the adoption table
+      await client.query("DELETE FROM adoptions WHERE dog_id = $1", [id]);
+
+      // Delete the record from the dogs table
+      const result = await client.query("DELETE FROM dogs WHERE id = $1", [id]);
+
+      await client.query("COMMIT");
+
+      console.log("successfully deleted a dog post");
+
+      if (result.rowCount === 0) {
+        res.status(404).json({ message: "Dog not found" });
+      } else {
+        res.json(result.rows);
+      }
+    } catch (error) {
+      await client.query("ROLLBACK");
+      console.error("Error executing query", error.stack);
+      res.status(500).json({ message: "Error executing query" });
+    } finally {
+      client.release();
     }
   } catch (error) {
-    console.error("Error executing query", error.stack);
-    res.status(500).json({ message: "Error executing query" });
+    console.error("Error connecting to database", error.stack);
+    res.status(500).json({ message: "Error connecting to database" });
   }
 };
 

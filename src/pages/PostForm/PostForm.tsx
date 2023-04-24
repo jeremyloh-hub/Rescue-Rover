@@ -10,10 +10,11 @@ import {
   Paper,
   Button,
 } from "@mui/material";
-import type { Dog, PostFormProps } from "../../type";
+import type { PostFormProps } from "../../type";
 import dayjs from "dayjs";
+import DeletePostForm from "./DeletePostForm";
 
-export default function PostForm({ dogs }: PostFormProps) {
+export default function PostForm({ dogs, delPostForm }: PostFormProps) {
   return (
     <>
       <TableContainer component={Paper}>
@@ -50,7 +51,7 @@ export default function PostForm({ dogs }: PostFormProps) {
                   </Link>
                 </TableCell>
                 <TableCell align="center">
-                  <Button variant="contained">Delete</Button>
+                  <DeletePostForm id={row.id} delPostForm={delPostForm} />
                 </TableCell>
               </TableRow>
             ))}
