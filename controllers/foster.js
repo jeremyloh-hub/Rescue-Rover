@@ -48,4 +48,25 @@ const checkFosterForm = async (req, res) => {
   }
 };
 
-module.exports = { addFoster, checkFosterForm };
+const showFosterStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const client = await pool.connect();
+    const result = await client.query(
+      `SELECT u.name AS user_name, d.name AS dog_name, a.status 
+       FROM users u 
+       LEFT JOIN fosters a ON u.id = a.user_id 
+       LEFT JOIN dogs d ON a.dog_id = d.id 
+       WHERE a.user_id = $1;`,
+      [id]
+    );
+    res.json(result.rows);
+    client.release();
+  } catch (err) {
+    console.error("Error executing query", err.stack);
+    res.status(500).json({ message: "Error executing query" });
+  }
+};
+
+module.exports = { addFoster, checkFosterForm, showFosterStatus };

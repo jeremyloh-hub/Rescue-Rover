@@ -5,5 +5,6 @@ const adoptCtrl = require("../controllers/adoption");
 
 router.post("/", adoptCtrl.addAdoption);
 router.get("/", adoptCtrl.checkAdoptionForm);
+router.get("/status/:id", adoptCtrl.showAdoptionStatus);
 
 module.exports = router;

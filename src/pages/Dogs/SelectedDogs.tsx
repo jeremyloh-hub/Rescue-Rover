@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import type { Dog } from "../../type";
-import { styled } from "@mui/material/styles";
-import { Box, Paper, Button } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
 import dayjs from "dayjs";
+import { styled } from "@mui/material/styles";
+import { Box, Paper, Button, Grid } from "@mui/material";
+import type { Dog } from "../../type";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
-  padding: theme.spacing(1),
+  padding: theme.spacing(2),
   textAlign: "center",
   color: theme.palette.text.secondary,
+  borderRadius: "12px",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
+  transition: "all 0.3s cubic-bezier(.25,.8,.25,1)",
+  "&:hover": {
+    transform: "translateY(-3px)",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.2)",
+  },
 }));
 
 export default function SelectedDogs() {
-  const [dogs, setDogs] = useState<Dog | null>(null);
+  const [dog, setDog] = useState<Dog | null>(null);
   const { dogName } = useParams<{ dogName: string }>();
   const token = localStorage.getItem("token");
 
@@ -28,56 +34,54 @@ export default function SelectedDogs() {
         return response.json();
       })
       .then((data: Dog) => {
-        setDogs(data);
+        setDog(data);
       })
       .catch((error) => console.error(error));
-  }, [dogName]);
+  }, []);
 
   return (
-    <>
-      {dogs && (
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
-            <Grid xs={6}>
-              <Item>
-                <img src={dogs.imgurl} alt={dogs.name} />
-              </Item>
-            </Grid>
-            <Grid xs={6}>
-              <Item>
-                <h2>{dogs.name}</h2>
-                {dogs.hdbapproved === true ? (
-                  <p>HDB Approved: Yes</p>
-                ) : (
-                  <p>HDB Approved: No</p>
-                )}
-                <p>Breed: {dogs.breed}</p>
-                <p>Gender: {dogs.gender}</p>
-                {dogs && dogs.dob && (
-                  <p>DOB: {dayjs(dogs.dob).format("DD/MM/YYYY")}</p>
-                )}
-                <p>Personality: {dogs.personality}</p>
-                {token && ( // Conditionally render buttons based on token
-                  <>
-                    <Link
-                      to={`/dogs/adopt/${dogs.id}`}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      <Button variant="outlined">Adopt</Button>
-                    </Link>
-                    <Link
-                      to={`/dogs/foster/${dogs.id}`}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      <Button variant="outlined">Foster</Button>
-                    </Link>
-                  </>
-                )}
-              </Item>
-            </Grid>
+    <Box sx={{ flexGrow: 1 }}>
+      {dog && (
+        <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <Item>
+              <img src={dog.imgurl} alt={dog.name} width="100%" />
+            </Item>
           </Grid>
-        </Box>
+          <Grid item xs={12} md={6}>
+            <Item>
+              <h2>{dog.name}</h2>
+              <p>Breed: {dog.breed}</p>
+              <p>Gender: {dog.gender}</p>
+              {dog.hdbapproved ? (
+                <p>HDB Approved: Yes</p>
+              ) : (
+                <p>HDB Approved: No</p>
+              )}
+              {dog.dob && <p>DOB: {dayjs(dog.dob).format("DD/MM/YYYY")}</p>}
+              <p>Personality: {dog.personality}</p>
+              {token && (
+                <>
+                  <Link
+                    to={`/dogs/adopt/${dog.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <Button variant="outlined" sx={{ mr: 1 }}>
+                      Adopt
+                    </Button>
+                  </Link>
+                  <Link
+                    to={`/dogs/foster/${dog.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <Button variant="outlined">Foster</Button>
+                  </Link>
+                </>
+              )}
+            </Item>
+          </Grid>
+        </Grid>
       )}
-    </>
+    </Box>
   );
 }

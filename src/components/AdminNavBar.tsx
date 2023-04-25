@@ -21,17 +21,11 @@ const pages = [
     link: "/dogs",
   },
   {
-    name: "Add Post",
+    name: "Post Management",
     link: "/postform",
   },
 ];
 const settings = [
-  {
-    name: "Application Status",
-    handler: () => {
-      window.location.replace("/status");
-    },
-  },
   {
     name: "Logout",
     handler: () => {

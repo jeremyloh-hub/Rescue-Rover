@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  Box,
   Card,
+  CardActionArea,
   CardContent,
   CardMedia,
-  Typography,
-  CardActionArea,
-  Box,
   Grid,
+  Typography,
 } from "@mui/material";
 import type { Dog } from "../../type";
 
@@ -22,47 +22,36 @@ export default function Dogs() {
   }, []);
 
   return (
-    <>
-      <h1>Adoption Gallery</h1>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
-          {dogs.map((d) => (
-            <Grid
-              item
-              xs={2}
-              sm={3}
-              md={3}
-              key={d.id}
-              sx={{ display: "flex", justifyContent: "center" }}
+    <Box sx={{ flexGrow: 1 }}>
+      <Typography variant="h3" component="h1" gutterBottom>
+        Adoption Gallery
+      </Typography>
+      <Grid container spacing={2}>
+        {dogs.map((dog) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={dog.id}>
+            <Link
+              to={`/dogs/${dog.name}`}
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              <Card sx={{ maxWidth: 600 }}>
-                <Link
-                  to={`/dogs/${d.name}`}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="160"
-                      image={d.imgurl}
-                      alt={d.name}
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {d.name}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Link>
+              <Card>
+                <CardActionArea>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={dog.imgurl}
+                    alt={dog.name}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {dog.name}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
               </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-    </>
+            </Link>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 }

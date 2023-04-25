@@ -18,6 +18,7 @@ import EditPostForm from "./PostForm/EditPostForm";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddPostForm from "./PostForm/AddPostForm";
+import ApplicationStatus from "./ApplicationStatus/ApplicationStatus";
 
 function App() {
   const [user, setUser] = useState(getUser());
@@ -78,6 +79,13 @@ function App() {
     },
   ];
 
+  const applicationStatusRoutes = [
+    {
+      path: "/status",
+      element: <ApplicationStatus />,
+    },
+  ];
+
   const accessDeniedComponent = (
     <div className="centered-message">Access denied</div>
   );
@@ -117,6 +125,13 @@ function App() {
             />
           ))}
           {formRoutes.map((config) => (
+            <Route
+              key={config.path}
+              path={config.path}
+              element={config.element}
+            />
+          ))}
+          {applicationStatusRoutes.map((config) => (
             <Route
               key={config.path}
               path={config.path}
