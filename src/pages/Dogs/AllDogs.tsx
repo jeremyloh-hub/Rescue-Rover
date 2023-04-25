@@ -45,6 +45,42 @@ export default function Dogs() {
                     <Typography gutterBottom variant="h5" component="div">
                       {dog.name}
                     </Typography>
+                    <Typography gutterBottom variant="h6" component="div">
+                      Gender:{" "}
+                      {dog.gender === "male" ? (
+                        <img
+                          src="https://i.imgur.com/MnNnNPz.png"
+                          alt="male"
+                          width="25"
+                          height="25"
+                        />
+                      ) : (
+                        <img
+                          src="https://i.imgur.com/8zRGd6N.png"
+                          alt="female"
+                          width="25"
+                          height="25"
+                        />
+                      )}
+                    </Typography>
+                    <Typography gutterBottom variant="h6" component="div">
+                      HDB Approved:{" "}
+                      {dog.hdbapproved === true ? (
+                        <img
+                          src="https://i.imgur.com/OluSXkQ.png"
+                          alt="HDB approved"
+                          width="30"
+                          height="30"
+                        />
+                      ) : (
+                        <img
+                          src="https://i.imgur.com/KOoepTi.png"
+                          alt="HDB not approved"
+                          width="30"
+                          height="30"
+                        />
+                      )}
+                    </Typography>
                   </CardContent>
                 </CardActionArea>
               </Card>

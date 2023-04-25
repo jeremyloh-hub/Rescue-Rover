@@ -74,3 +74,15 @@ export type PostFormAddProps = {
 export type PostFormEditProps = {
   handleEditPost: (editedPost: EditPostForms) => void;
 };
+
+export type GetAdoptionForm = {
+  user_name: string;
+  dog_name: string;
+  status: boolean;
+};
+
+export type GetFosterForm = {
+  user_name: string;
+  dog_name: string;
+  status: boolean;
+};

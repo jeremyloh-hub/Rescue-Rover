@@ -19,6 +19,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddPostForm from "./PostForm/AddPostForm";
 import ApplicationStatus from "./ApplicationStatus/ApplicationStatus";
+import Footer from "../components/Footer";
 
 function App() {
   const [user, setUser] = useState(getUser());
@@ -86,12 +87,12 @@ function App() {
     },
   ];
 
-  const accessDeniedComponent = (
-    <div className="centered-message">Access denied</div>
-  );
+  const accessDeniedComponent = <div className="">Access denied</div>;
 
   const userPagesRoutes = [
     ...dogPageRoutes,
+    ...formRoutes,
+    ...applicationStatusRoutes,
     {
       path: "/",
       element: <HomePage />,
@@ -118,20 +119,6 @@ function App() {
       content: (
         <Routes>
           {userPagesRoutes.map((config) => (
-            <Route
-              key={config.path}
-              path={config.path}
-              element={config.element}
-            />
-          ))}
-          {formRoutes.map((config) => (
-            <Route
-              key={config.path}
-              path={config.path}
-              element={config.element}
-            />
-          ))}
-          {applicationStatusRoutes.map((config) => (
             <Route
               key={config.path}
               path={config.path}
@@ -182,6 +169,7 @@ function App() {
       <React.Fragment>
         {tokenUser.role === "admin" ? <AdminNavBar /> : <UserNavBar />}
         {renderLoggedInContent}
+        <Footer />
       </React.Fragment>
     );
   };
@@ -192,7 +180,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         {loginRoutes.map((config) => (
-          <Route {...config} />
+          <Route key={config.path} {...config} />
         ))}
         {dogPageRoutes.map((config) => (
           <Route key={config.path} {...config}></Route>
@@ -205,6 +193,7 @@ function App() {
           />
         ))}
       </Routes>
+      <Footer />
     </React.Fragment>
   );
 

@@ -66,7 +66,6 @@ export default function UserNavBar() {
           <Typography
             variant="h6"
             noWrap
-            component="a"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -161,7 +160,10 @@ export default function UserNavBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="" />
+                <Avatar
+                  alt="Remy Sharp"
+                  src="https://i.imgur.com/8k1yPSb.png"
+                />
               </IconButton>
             </Tooltip>
             <Menu

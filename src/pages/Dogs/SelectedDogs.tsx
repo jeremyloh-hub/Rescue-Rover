@@ -52,11 +52,39 @@ export default function SelectedDogs() {
             <Item>
               <h2>{dog.name}</h2>
               <p>Breed: {dog.breed}</p>
-              <p>Gender: {dog.gender}</p>
-              {dog.hdbapproved ? (
-                <p>HDB Approved: Yes</p>
+              <p>
+                Gender:{" "}
+                {dog.gender === "male" ? (
+                  <img
+                    src="https://i.imgur.com/MnNnNPz.png"
+                    alt="male"
+                    width="20"
+                    height="20"
+                  />
+                ) : (
+                  <img
+                    src="https://i.imgur.com/8zRGd6N.png"
+                    alt="female"
+                    width="20"
+                    height="20"
+                  />
+                )}
+              </p>
+              HDB Approved:{" "}
+              {dog.hdbapproved === true ? (
+                <img
+                  src="https://i.imgur.com/OluSXkQ.png"
+                  alt="HDB approved"
+                  width="20"
+                  height="20"
+                />
               ) : (
-                <p>HDB Approved: No</p>
+                <img
+                  src="https://i.imgur.com/KOoepTi.png"
+                  alt="HDB not approved"
+                  width="20"
+                  height="20"
+                />
               )}
               {dog.dob && <p>DOB: {dayjs(dog.dob).format("DD/MM/YYYY")}</p>}
               <p>Personality: {dog.personality}</p>

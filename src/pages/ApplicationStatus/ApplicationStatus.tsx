@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -10,37 +9,38 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import dayjs from "dayjs";
+import type { GetAdoptionForm, GetFosterForm } from "../../type";
 
 export default function ApplicationStatus() {
-  const [adoption, setAdoption] = useState<any[]>([]);
-  const [foster, setFoster] = useState<any[]>([]);
+  const [adoption, setAdoption] = useState<GetAdoptionForm[]>([]);
+  const [foster, setFoster] = useState<GetFosterForm[]>([]);
   const token = localStorage.getItem("token");
   const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
+  const id = tokenUser.user.id;
 
   useEffect(() => {
-    fetch(`/api/adoption/status/${tokenUser.user.id}`)
+    fetch(`/api/adoption/status/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         return response.json();
       })
-      .then((data: any) => {
+      .then((data) => {
         setAdoption(data);
       })
       .catch((error) => console.error(error));
   }, []);
 
   useEffect(() => {
-    fetch(`/api/foster/status/${tokenUser.user.id}`)
+    fetch(`/api/foster/status/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         return response.json();
       })
-      .then((data: any) => {
+      .then((data) => {
         setFoster(data);
       })
       .catch((error) => console.error(error));
@@ -64,7 +64,7 @@ export default function ApplicationStatus() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {adoption.map((row: any) => (
+            {adoption.map((row) => (
               <TableRow key={row.dog_name}>
                 <TableCell align="center" component="th" scope="row">
                   {row.user_name}
@@ -92,7 +92,7 @@ export default function ApplicationStatus() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {foster.map((row: any) => (
+            {foster.map((row) => (
               <TableRow key={row.dog_name}>
                 <TableCell align="center" component="th" scope="row">
                   {row.user_name}

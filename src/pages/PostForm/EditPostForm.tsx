@@ -78,14 +78,14 @@ export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
 
   const handleEdit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const dobPlusOne = dayjs(editedPost.dob).add(1, "day").toDate();
-    const editedPostWithPlusOne = { ...editedPost, dob: dobPlusOne };
+    // const dobPlusOne = dayjs(editedPost.dob).add(1, "day").toDate();
+    // const editedPostWithPlusOne = { ...editedPost, dob: dobPlusOne };
     const response = await fetch(`/api/dogs/${id}/edit`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(editedPostWithPlusOne),
+      body: JSON.stringify(editedPost),
     });
     if (response.ok) {
       const updatedPost = await response.json();
