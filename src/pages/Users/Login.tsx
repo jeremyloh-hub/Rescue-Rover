@@ -24,7 +24,6 @@ export default function Login({ setUser }: { setUser: UF }) {
     event.preventDefault();
 
     try {
-      console.log(loginTry);
       const response = await fetch("/api/users/login", {
         method: "POST",
         headers: {
@@ -39,15 +38,12 @@ export default function Login({ setUser }: { setUser: UF }) {
       localStorage.setItem("token", JSON.stringify(data.token));
       const decoded = getUser();
       const User = JSON.parse(window.atob(data.token.split(".")[1]));
-      console.log(User);
       setUser(decoded);
       if (User.user.role === "user") {
         navigate("/");
       } else if (User.user.role === "admin") {
         navigate("/");
       }
-
-      console.log(decoded);
     } catch (error: any) {
       setError(error.message);
     }

@@ -23,7 +23,39 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function SelectedDogs() {
   const [dog, setDog] = useState<Dog | null>(null);
   const { dogName } = useParams<{ dogName: string }>();
+  const [userid, setUserid] = useState<number | null>(null);
   const token = localStorage.getItem("token");
+  const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
+  const [adoptionFormExists, setAdoptionFormExists] = useState(false);
+  const [fosterFormExists, setFosterFormExists] = useState(false);
+
+  const formExists = async (userid: number | null, formType: string) => {
+    const response = await fetch(`/api/${formType}?userid=${userid}`);
+    if (!response.ok) {
+      throw new Error(`Error checking if user ${formType} exists`);
+    }
+    const data = await response.json();
+    if (data) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const checkForms = async () => {
+      if (!token) {
+        return null;
+      } else {
+        setUserid(tokenUser.user.id);
+        const adoptionExists = await formExists(userid, "adoption");
+        const fosterExists = await formExists(userid, "foster");
+        setAdoptionFormExists(adoptionExists);
+        setFosterFormExists(fosterExists);
+      }
+    };
+    checkForms();
+  }, [token]);
 
   useEffect(() => {
     fetch(`/api/dogs/${dogName}`)
@@ -93,16 +125,32 @@ export default function SelectedDogs() {
                   <Link
                     to={`/dogs/adopt/${dog.id}`}
                     style={{ textDecoration: "none", color: "inherit" }}
+                    onClick={(event) => {
+                      if (adoptionFormExists) {
+                        event.preventDefault();
+                      }
+                    }}
                   >
-                    <Button variant="outlined" sx={{ mr: 1 }}>
+                    <Button
+                      variant="outlined"
+                      sx={{ mr: 1 }}
+                      disabled={adoptionFormExists}
+                    >
                       Adopt
                     </Button>
                   </Link>
                   <Link
                     to={`/dogs/foster/${dog.id}`}
                     style={{ textDecoration: "none", color: "inherit" }}
+                    onClick={(event) => {
+                      if (fosterFormExists) {
+                        event.preventDefault();
+                      }
+                    }}
                   >
-                    <Button variant="outlined">Foster</Button>
+                    <Button variant="outlined" disabled={fosterFormExists}>
+                      Foster
+                    </Button>
                   </Link>
                 </>
               )}
