@@ -20,6 +20,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AddPostForm from "./PostForm/AddPostForm";
 import ApplicationStatus from "./ApplicationStatus/ApplicationStatus";
 import Footer from "../components/Footer";
+import AccessDeniedPage from "../components/AccessDeniedPage";
 
 function App() {
   const [user, setUser] = useState(getUser());
@@ -87,7 +88,7 @@ function App() {
     },
   ];
 
-  const accessDeniedComponent = <div className="">Access denied</div>;
+  const accessDeniedComponent = <AccessDeniedPage />;
 
   const userPagesRoutes = [
     ...dogPageRoutes,
