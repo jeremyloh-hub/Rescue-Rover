@@ -11,7 +11,12 @@ const items = [
   {
     name: "Rescue Fundraiser",
     image:
-      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.-7ll_cZl0L1PjaKDeXoBqAHaFj%26pid%3DApi&f=1&ipt=ec61935bd59924305e71c1e95df8f031207509e7be0fafab7c0122d48c1a40c3&ipo=images",
+      "https://images.pexels.com/photos/2607544/pexels-photo-2607544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  },
+  {
+    name: "Rescue Charity Dinner",
+    image:
+      "https://images.pexels.com/photos/4877849/pexels-photo-4877849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
   },
 ];
 

@@ -84,12 +84,12 @@ const isAuth = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       const { rows } = await pool.query(
-        "SELECT * FROM customers WHERE email = $1",
-        [decoded.customer.email]
+        "SELECT * FROM users WHERE userid = $1",
+        [decoded.user.userid]
       );
 
       if (rows.length > 0) {
-        req.customer = decoded.customer;
+        req.user = decoded.user;
         next();
       } else {
         res.status(403).send("Forbidden");

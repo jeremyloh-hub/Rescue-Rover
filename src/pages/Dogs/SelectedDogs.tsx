@@ -23,14 +23,17 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function SelectedDogs() {
   const [dog, setDog] = useState<Dog | null>(null);
   const { dogName } = useParams<{ dogName: string }>();
-  const [userid, setUserid] = useState<number | null>(null);
   const token = localStorage.getItem("token");
   const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
   const [adoptionFormExists, setAdoptionFormExists] = useState(false);
   const [fosterFormExists, setFosterFormExists] = useState(false);
 
   const formExists = async (userid: number | null, formType: string) => {
-    const response = await fetch(`/api/${formType}?userid=${userid}`);
+    const response = await fetch(`/api/${formType}?userid=${userid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error(`Error checking if user ${formType} exists`);
     }
@@ -47,7 +50,7 @@ export default function SelectedDogs() {
       if (!token) {
         return null;
       } else {
-        setUserid(tokenUser.user.id);
+        const userid = tokenUser.user.id;
         const adoptionExists = await formExists(userid, "adoption");
         const fosterExists = await formExists(userid, "foster");
         setAdoptionFormExists(adoptionExists);
@@ -118,7 +121,17 @@ export default function SelectedDogs() {
                   height="20"
                 />
               )}
-              {dog.dob && <p>DOB: {dayjs(dog.dob).format("DD/MM/YYYY")}</p>}
+              {dog.dob && (
+                <p>
+                  <img
+                    src="https://i.imgur.com/k9iIAtp.png"
+                    alt="Birthday"
+                    width="20"
+                    height="20"
+                  />
+                  {dayjs(dog.dob).format("DD/MM/YYYY")}
+                </p>
+              )}
               <p>Personality: {dog.personality}</p>
               {token && (
                 <>

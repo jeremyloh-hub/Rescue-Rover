@@ -30,7 +30,7 @@ const PostFormSchema = object({
 
 export default function AddPostForm({ addPost }: PostFormAddProps) {
   const navigate = useNavigate();
-
+  const token = localStorage.getItem("token");
   const [state, setState] = useState<PostForms>({
     name: "",
     breed: "",
@@ -48,6 +48,7 @@ export default function AddPostForm({ addPost }: PostFormAddProps) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
       },
       body: JSON.stringify(postData),
     });

@@ -19,29 +19,24 @@ export default function ApplicationStatus() {
   const id = tokenUser.user.id;
 
   useEffect(() => {
-    fetch(`/api/adoption/status/${id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAdoption(data);
-      })
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    fetch(`/api/foster/status/${id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setFoster(data);
+    Promise.all([
+      fetch(`/api/adoption/status/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }),
+      fetch(`/api/foster/status/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }),
+    ])
+      .then((responses) =>
+        Promise.all(responses.map((response) => response.json()))
+      )
+      .then(([adoptionData, fosterData]) => {
+        setAdoption(adoptionData);
+        setFoster(fosterData);
       })
       .catch((error) => console.error(error));
   }, []);

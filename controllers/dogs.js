@@ -20,12 +20,20 @@ const DogPostSchema = yup.object({
 });
 
 const showDogs = async (req, res) => {
+  const { hdbapproved } = req.query;
+
+  let query = "SELECT * FROM dogs";
+
+  if (hdbapproved) {
+    query += ` WHERE hdbapproved=${hdbapproved}`;
+  }
+
   pool.connect((err, client, done) => {
     if (err) {
       console.error("Error acquiring client", err.stack);
       return res.status(500).json({ message: "Error acquiring client" });
     }
-    client.query("SELECT * FROM dogs", (err, result) => {
+    client.query(query, (err, result) => {
       if (err) {
         console.error("Error executing query", err.stack);
         return res.status(500).json({ message: "Error executing query" });

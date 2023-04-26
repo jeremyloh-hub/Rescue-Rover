@@ -10,7 +10,7 @@ export default function ProductsDeleteButton({
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: "Bearer " + token,
+        Authorization: "Bearer " + token,
       },
     });
     await response.json();

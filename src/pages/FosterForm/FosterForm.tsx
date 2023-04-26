@@ -42,7 +42,11 @@ export default function FosterForm() {
   const [error, setError] = useState<string | null>(null);
 
   const formExists = async (userid: number) => {
-    const response = await fetch(`/api/foster?userid=${userid}`);
+    const response = await fetch(`/api/foster?userid=${userid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error checking if user adoption exists");
     }
@@ -59,6 +63,7 @@ export default function FosterForm() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(userData),
     });

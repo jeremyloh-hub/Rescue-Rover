@@ -41,7 +41,11 @@ export default function AdoptionForm() {
   const [error, setError] = useState<string | null>(null);
 
   const formExists = async (userid: number) => {
-    const response = await fetch(`/api/adoption?userid=${userid}`);
+    const response = await fetch(`/api/adoption?userid=${userid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!response.ok) {
       throw new Error("Error checking if user adoption exists");
     }
@@ -58,6 +62,7 @@ export default function AdoptionForm() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
       },
       body: JSON.stringify(userData),
     });

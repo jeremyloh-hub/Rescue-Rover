@@ -21,6 +21,7 @@ export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const token = localStorage.getItem("token");
 
   const [editedPost, setEditedPost] = useState<EditPostForms>({
     name: "",
@@ -30,7 +31,11 @@ export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
   });
 
   useEffect(() => {
-    fetch(`/api/dogs/postform/${id}`)
+    fetch(`/api/dogs/postform/${id}`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -84,6 +89,7 @@ export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
       },
       body: JSON.stringify(editedPost),
     });

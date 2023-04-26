@@ -4,9 +4,9 @@ const dogCtrl = require("../controllers/dogs");
 const userCtrl = require("../controllers/users");
 
 router.get("/", dogCtrl.showDogs);
-router.get("/postform/:id", dogCtrl.getSelectedPost);
+router.get("/postform/:id", userCtrl.isAuth, dogCtrl.getSelectedPost);
 router.get("/:dogName", dogCtrl.showSelectedDogs);
-router.post("/new", dogCtrl.addDogPost);
-router.put("/:id/edit", dogCtrl.editDogPost);
-router.delete("/:id/delete", dogCtrl.deleteDogPost);
+router.post("/new", userCtrl.isAuth, dogCtrl.addDogPost);
+router.put("/:id/edit", userCtrl.isAuth, dogCtrl.editDogPost);
+router.delete("/:id/delete", userCtrl.isAuth, dogCtrl.deleteDogPost);
 module.exports = router;
