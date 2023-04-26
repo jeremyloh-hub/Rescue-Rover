@@ -33,7 +33,7 @@ export default function Login({ setUser }: { setUser: UF }) {
       });
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || "Network error");
+        throw new Error(data.error || "Password or User is wrong");
       }
       localStorage.setItem("token", JSON.stringify(data.token));
       const decoded = getUser();
