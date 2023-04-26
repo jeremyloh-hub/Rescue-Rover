@@ -70,6 +70,7 @@ export default function ApplicationStatus() {
                     captionSide: "top",
                     textAlign: "center",
                     fontSize: "20px",
+                    fontWeight: "bold",
                   }}
                 >
                   Adoption Application Status
@@ -108,6 +109,7 @@ export default function ApplicationStatus() {
                     captionSide: "top",
                     textAlign: "center",
                     fontSize: "20px",
+                    fontWeight: "bold",
                   }}
                 >
                   Foster Application Status
