@@ -13,6 +13,7 @@ import {
   OutlinedInput,
   Stack,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
@@ -22,6 +23,7 @@ export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [editedPost, setEditedPost] = useState<EditPostForms>({
     name: "",
@@ -44,8 +46,12 @@ export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
       })
       .then((data: Dog) => {
         setEditedPost(data);
+        setLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, []);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,71 +141,84 @@ export default function EditPostForm({ handleEditPost }: PostFormEditProps) {
 
   return (
     <>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        sx={{ my: 4, bgcolor: "grey.100", mx: "auto" }}
-        border={1}
-        borderColor="grey.300"
-        borderRadius={4}
-        maxWidth={800}
-        height={570}
-      >
-        <form autoComplete="off" onSubmit={handleEdit}>
-          <Typography variant="h5" align="center" gutterBottom>
-            Edit Dog Post
-          </Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <FormControl>
-              <InputLabel htmlFor="name">Name</InputLabel>
-              <OutlinedInput
-                id="name"
-                name="name"
-                label="Outlined"
-                value={editedPost.name}
-                onChange={handleNameChange}
-                required
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          sx={{ my: 4, bgcolor: "grey.100", mx: "auto" }}
+          border={1}
+          borderColor="grey.300"
+          borderRadius={4}
+          maxWidth={800}
+          height={570}
+        >
+          <form autoComplete="off" onSubmit={handleEdit}>
+            <Typography variant="h5" align="center" gutterBottom>
+              Edit Dog Post
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <FormControl>
+                <InputLabel htmlFor="name">Name</InputLabel>
+                <OutlinedInput
+                  id="name"
+                  name="name"
+                  label="Outlined"
+                  value={editedPost.name}
+                  onChange={handleNameChange}
+                  required
+                />
+              </FormControl>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="hdbapproved">HDB Approved</InputLabel>
+                <Select
+                  id="hdbapproved"
+                  name="hdbapproved"
+                  value={editedPost.hdbapproved}
+                  onChange={handleHdbChange}
+                  label="Outlined"
+                  required
+                >
+                  <MenuItem value="false">No</MenuItem>
+                  <MenuItem value="true">Yes</MenuItem>
+                </Select>
+              </FormControl>
+              <DatePicker
+                label="Date of Birth"
+                value={dayjs(editedPost.dob)}
+                onChange={handleDobChange}
               />
-            </FormControl>
-            <FormControl variant="outlined">
-              <InputLabel htmlFor="hdbapproved">HDB Approved</InputLabel>
-              <Select
-                id="hdbapproved"
-                name="hdbapproved"
-                value={editedPost.hdbapproved}
-                onChange={handleHdbChange}
-                label="Outlined"
-                required
-              >
-                <MenuItem value="false">No</MenuItem>
-                <MenuItem value="true">Yes</MenuItem>
-              </Select>
-            </FormControl>
-            <DatePicker
-              label="Date of Birth"
-              value={dayjs(editedPost.dob)}
-              onChange={handleDobChange}
-            />
-            <FormControl variant="outlined">
-              <InputLabel htmlFor="personality"></InputLabel>
-              <TextareaAutosize
-                id="personality"
-                name="personality"
-                aria-label="personality"
-                placeholder="Personality"
-                value={editedPost.personality}
-                onChange={handlePersonalityChange}
-                required
-              />
-            </FormControl>
-            <Button type="submit" variant="contained">
-              Edit Post
-            </Button>
-          </Box>
-        </form>
-        {error ? <Typography color="error">{error}</Typography> : null}
-      </Box>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="personality"></InputLabel>
+                <TextareaAutosize
+                  id="personality"
+                  name="personality"
+                  aria-label="personality"
+                  placeholder="Personality"
+                  value={editedPost.personality}
+                  onChange={handlePersonalityChange}
+                  required
+                />
+              </FormControl>
+              <Button type="submit" variant="contained">
+                Edit Post
+              </Button>
+            </Box>
+          </form>
+          {error ? <Typography color="error">{error}</Typography> : null}
+        </Box>
+      )}
     </>
   );
 }

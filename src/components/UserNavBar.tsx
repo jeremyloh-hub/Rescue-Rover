@@ -20,14 +20,12 @@ const pages = [
     name: "Adoption Gallery",
     link: "/dogs",
   },
-];
-const settings = [
   {
     name: "Application Status",
-    handler: () => {
-      window.location.replace("/status");
-    },
+    link: "/statuspage",
   },
+];
+const settings = [
   {
     name: "Logout",
     handler: () => {

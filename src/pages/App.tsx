@@ -82,7 +82,7 @@ function App() {
 
   const applicationStatusRoutes = [
     {
-      path: "/status",
+      path: "/statuspage",
       element: <ApplicationStatus />,
     },
   ];

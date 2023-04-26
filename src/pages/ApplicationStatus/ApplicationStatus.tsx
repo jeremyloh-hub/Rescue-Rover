@@ -8,6 +8,8 @@ import {
   TableRow,
   Paper,
   Typography,
+  Box,
+  CircularProgress,
 } from "@mui/material";
 import type { GetAdoptionForm, GetFosterForm } from "../../type";
 
@@ -17,6 +19,7 @@ export default function ApplicationStatus() {
   const token = localStorage.getItem("token");
   const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
   const id = tokenUser.user.id;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -37,68 +40,84 @@ export default function ApplicationStatus() {
       .then(([adoptionData, fosterData]) => {
         setAdoption(adoptionData);
         setFoster(fosterData);
+        setLoading(false);
       })
       .catch((error) => console.error(error));
   }, []);
 
   return (
     <>
-      <Typography variant="h4" align="center" gutterBottom>
-        Adoption Application Status
-      </Typography>
-      <TableContainer
-        component={Paper}
-        style={{ width: "80%", margin: "auto" }}
-      >
-        <Table size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Applicant</TableCell>
-              <TableCell align="center">Dog Name</TableCell>
-              <TableCell align="center">Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {adoption.map((row) => (
-              <TableRow key={row.dog_name}>
-                <TableCell align="center" component="th" scope="row">
-                  {row.user_name}
-                </TableCell>
-                <TableCell align="center">{row.dog_name}</TableCell>
-                <TableCell align="center">{row.status}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Typography variant="h4" align="center" gutterBottom>
-        Foster Application Status
-      </Typography>
-      <TableContainer
-        component={Paper}
-        style={{ width: "80%", margin: "auto" }}
-      >
-        <Table size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Applicant</TableCell>
-              <TableCell align="center">Dog Name</TableCell>
-              <TableCell align="center">Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {foster.map((row) => (
-              <TableRow key={row.dog_name}>
-                <TableCell align="center" component="th" scope="row">
-                  {row.user_name}
-                </TableCell>
-                <TableCell align="center">{row.dog_name}</TableCell>
-                <TableCell align="center">{row.status}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <Typography variant="h4" align="center" gutterBottom>
+            Adoption Application Status
+          </Typography>
+          <TableContainer
+            component={Paper}
+            style={{ width: "80%", margin: "auto" }}
+          >
+            <Table size="small" aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">Applicant</TableCell>
+                  <TableCell align="center">Dog Name</TableCell>
+                  <TableCell align="center">Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {adoption.map((row) => (
+                  <TableRow key={row.dog_name}>
+                    <TableCell align="center" component="th" scope="row">
+                      {row.user_name}
+                    </TableCell>
+                    <TableCell align="center">{row.dog_name}</TableCell>
+                    <TableCell align="center">{row.status}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Typography variant="h4" align="center" gutterBottom>
+            Foster Application Status
+          </Typography>
+          <TableContainer
+            component={Paper}
+            style={{ width: "80%", margin: "auto" }}
+          >
+            <Table size="small" aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">Applicant</TableCell>
+                  <TableCell align="center">Dog Name</TableCell>
+                  <TableCell align="center">Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {foster.map((row) => (
+                  <TableRow key={row.dog_name}>
+                    <TableCell align="center" component="th" scope="row">
+                      {row.user_name}
+                    </TableCell>
+                    <TableCell align="center">{row.dog_name}</TableCell>
+                    <TableCell align="center">{row.status}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      )}
     </>
   );
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { styled } from "@mui/material/styles";
-import { Box, Paper, Button, Grid } from "@mui/material";
+import { Box, Paper, Button, Grid, CircularProgress } from "@mui/material";
 import type { Dog } from "../../type";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -27,6 +27,7 @@ export default function SelectedDogs() {
   const tokenUser = token ? JSON.parse(window.atob(token.split(".")[1])) : null;
   const [adoptionFormExists, setAdoptionFormExists] = useState(false);
   const [fosterFormExists, setFosterFormExists] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const formExists = async (userid: number | null, formType: string) => {
     const response = await fetch(`/api/${formType}?userid=${userid}`, {
@@ -61,6 +62,7 @@ export default function SelectedDogs() {
   }, [token]);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`/api/dogs/${dogName}`)
       .then((response) => {
         if (!response.ok) {
@@ -70,107 +72,129 @@ export default function SelectedDogs() {
       })
       .then((data: Dog) => {
         setDog(data);
+        setLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, []);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      {dog && (
-        <Grid container spacing={3} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Item>
-              <img src={dog.imgurl} alt={dog.name} width="100%" />
-            </Item>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Item>
-              <h2>{dog.name}</h2>
-              <p>Breed: {dog.breed}</p>
-              <p>
-                Gender:{" "}
-                {dog.gender === "male" ? (
-                  <img
-                    src="https://i.imgur.com/MnNnNPz.png"
-                    alt="male"
-                    width="20"
-                    height="20"
-                  />
-                ) : (
-                  <img
-                    src="https://i.imgur.com/8zRGd6N.png"
-                    alt="female"
-                    width="20"
-                    height="20"
-                  />
-                )}
-              </p>
-              HDB Approved:{" "}
-              {dog.hdbapproved === true ? (
-                <img
-                  src="https://i.imgur.com/OluSXkQ.png"
-                  alt="HDB approved"
-                  width="20"
-                  height="20"
-                />
-              ) : (
-                <img
-                  src="https://i.imgur.com/KOoepTi.png"
-                  alt="HDB not approved"
-                  width="20"
-                  height="20"
-                />
-              )}
-              {dog.dob && (
-                <p>
-                  <img
-                    src="https://i.imgur.com/k9iIAtp.png"
-                    alt="Birthday"
-                    width="20"
-                    height="20"
-                  />
-                  {dayjs(dog.dob).format("DD/MM/YYYY")}
-                </p>
-              )}
-              <p>Personality: {dog.personality}</p>
-              {token && (
-                <>
-                  <Link
-                    to={`/dogs/adopt/${dog.id}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                    onClick={(event) => {
-                      if (adoptionFormExists) {
-                        event.preventDefault();
-                      }
-                    }}
-                  >
-                    <Button
-                      variant="outlined"
-                      sx={{ mr: 1 }}
-                      disabled={adoptionFormExists}
-                    >
-                      Adopt
-                    </Button>
-                  </Link>
-                  <Link
-                    to={`/dogs/foster/${dog.id}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                    onClick={(event) => {
-                      if (fosterFormExists) {
-                        event.preventDefault();
-                      }
-                    }}
-                  >
-                    <Button variant="outlined" disabled={fosterFormExists}>
-                      Foster
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </Item>
-          </Grid>
-        </Grid>
+    <>
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box sx={{ flexGrow: 1 }}>
+          {dog && (
+            <Grid container spacing={3} alignItems="center">
+              <Grid item xs={12} md={6}>
+                <Item>
+                  <img src={dog.imgurl} alt={dog.name} width="100%" />
+                </Item>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Item>
+                  <h2>{dog.name}</h2>
+                  <h3>Breed: {dog.breed}</h3>
+                  <h3>
+                    Gender:{" "}
+                    {dog.gender === "male" ? (
+                      <img
+                        src="https://i.imgur.com/MnNnNPz.png"
+                        alt="male"
+                        width="20"
+                        height="20"
+                      />
+                    ) : (
+                      <img
+                        src="https://i.imgur.com/8zRGd6N.png"
+                        alt="female"
+                        width="20"
+                        height="20"
+                      />
+                    )}
+                  </h3>
+                  <h3>
+                    HDB Approved:{" "}
+                    {dog.hdbapproved === true ? (
+                      <img
+                        src="https://i.imgur.com/OluSXkQ.png"
+                        alt="HDB approved"
+                        width="25"
+                        height="25"
+                      />
+                    ) : (
+                      <img
+                        src="https://i.imgur.com/KOoepTi.png"
+                        alt="HDB not approved"
+                        width="25"
+                        height="25"
+                      />
+                    )}
+                  </h3>
+
+                  {dog.dob && (
+                    <h3>
+                      <img
+                        src="https://i.imgur.com/k9iIAtp.png"
+                        alt="Birthday"
+                        width="20"
+                        height="20"
+                      />
+                      {" " + dayjs(dog.dob).format("DD/MM/YYYY")}
+                    </h3>
+                  )}
+                  <h3>Personality: {dog.personality}</h3>
+                  {token && (
+                    <>
+                      <Link
+                        to={`/dogs/adopt/${dog.id}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                        onClick={(event) => {
+                          if (adoptionFormExists) {
+                            event.preventDefault();
+                          }
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          sx={{ mr: 1 }}
+                          disabled={adoptionFormExists}
+                        >
+                          Adopt
+                        </Button>
+                      </Link>
+                      <Link
+                        to={`/dogs/foster/${dog.id}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                        onClick={(event) => {
+                          if (fosterFormExists) {
+                            event.preventDefault();
+                          }
+                        }}
+                      >
+                        <Button variant="outlined" disabled={fosterFormExists}>
+                          Foster
+                        </Button>
+                      </Link>
+                    </>
+                  )}
+                </Item>
+              </Grid>
+            </Grid>
+          )}
+        </Box>
       )}
-    </Box>
+    </>
   );
 }
