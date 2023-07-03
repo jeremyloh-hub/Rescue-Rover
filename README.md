@@ -23,7 +23,7 @@ https://rescue-rover.onrender.com
 ### Backend
 
 - NodeJS / Express
-- PostgresSQL
+- PostgresSQL (Bit.io)
 - Beekeeper Studio (Database)
 
 ### Others
